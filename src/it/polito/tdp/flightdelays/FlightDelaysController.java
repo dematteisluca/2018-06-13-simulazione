@@ -3,6 +3,7 @@ package it.polito.tdp.flightdelays;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.flightdelays.model.Airline;
 import it.polito.tdp.flightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +24,7 @@ public class FlightDelaysController {
     private TextArea txtResult;
 
     @FXML
-    private ComboBox<?> cmbBoxLineaAerea;
+    private ComboBox<Airline> cmbBoxLineaAerea;
 
     @FXML
     private Button caricaVoliBtn;
@@ -36,7 +37,25 @@ public class FlightDelaysController {
 
     @FXML
     void doCaricaVoli(ActionEvent event) {
-    		System.out.println("Carica voli!");
+    	try {
+        	
+        	txtResult.clear();
+        	Airline a = cmbBoxLineaAerea.getValue();  	
+        	model.creaGrafo(a);
+        	
+        	List<Tratta> result = model.getPesoMassimo();
+        	
+        	int i=1;
+        	
+        	for (Tratta tratta : result) {
+        		txtResult.appendText(i+") "+tratta.getId1()+" -> "+tratta.getId2()+" peso: "+tratta.getPeso()+"\n");
+        		i++;
+        	}
+        	
+        	}catch (Exception e) {
+    			txtResult.appendText("Seleziona una compagnia aerea!\n");
+    		}
+
     }
 
     @FXML
@@ -55,6 +74,5 @@ public class FlightDelaysController {
     }
     
 	public void setModel(Model model) {
-		// TODO Auto-generated method stub
-	}
+		cmbBoxLineaAerea.getItems().addAll(model.getAirlines());}
 }
